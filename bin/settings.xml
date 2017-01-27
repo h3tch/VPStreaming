@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Settings>
+  <gstreamer>
+    <directory><!--use default--></directory>
+    <executable>gst-launch-1.0.exe</executable>
+    <pipeline>videotestsrc ! autovideosink</pipeline>
+  </gstreamer>
+</Settings>
