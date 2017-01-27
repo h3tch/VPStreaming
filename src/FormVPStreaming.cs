@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -11,6 +15,22 @@ namespace VPStreaming
         public FormVPStreaming()
         {
             InitializeComponent();
+
+            // load the logo if the file exists
+            if (File.Exists("logo.png"))
+            {
+                var logo = Image.FromFile("logo.png");
+                var factor = PictureLogo.Width / (double)logo.Width;
+                logo = ResizeImage(logo,
+                    (int)Math.Round(logo.Width * factor),
+                    (int)Math.Round(logo.Height * factor));
+                
+                var offset = logo.Height - PictureLogo.Height;
+                MaximumSize = new Size(MaximumSize.Width, MaximumSize.Height + offset);
+                MinimumSize = new Size(MinimumSize.Width, MinimumSize.Height + offset);
+                PictureLogo.Height = logo.Height;
+                PictureLogo.Image = logo;
+            }
         }
 
         private void ButtonStart_Click(object sender, EventArgs e)
@@ -40,7 +60,10 @@ namespace VPStreaming
                 if (launch != null && launch.Length > 0)
                     gst_launch = launch;
                 if (pipeline != null && pipeline.Length > 0)
-                    gst_pipeline = pipeline;
+                {
+                    pipeline = Regex.Replace(pipeline, "{IP}", TextIpAddress.Text);
+                    gst_pipeline = Regex.Replace(pipeline, "{password}", TextPassword.Text);
+                }
             }
             catch (FileNotFoundException ex)
             {
@@ -66,6 +89,38 @@ namespace VPStreaming
             {
                 MessageBox.Show(ex.Message, "Error");
             }
+        }
+
+        /// <summary>
+        /// Resize the image to the specified width and height.
+        /// </summary>
+        /// <param name="image">The image to resize.</param>
+        /// <param name="width">The width to resize to.</param>
+        /// <param name="height">The height to resize to.</param>
+        /// <returns>The resized image.</returns>
+        public static Bitmap ResizeImage(Image image, int width, int height)
+        {
+            var destRect = new Rectangle(0, 0, width, height);
+            var destImage = new Bitmap(width, height);
+
+            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+            using (var graphics = Graphics.FromImage(destImage))
+            {
+                graphics.CompositingMode = CompositingMode.SourceCopy;
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+                using (var wrapMode = new ImageAttributes())
+                {
+                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+                }
+            }
+
+            return destImage;
         }
     }
 }

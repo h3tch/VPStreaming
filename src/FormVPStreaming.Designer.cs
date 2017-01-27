@@ -58,13 +58,13 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 41F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(578, 294);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(578, 94);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 233);
+            this.label1.Location = new System.Drawing.Point(3, 33);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(88, 20);
             this.label1.TabIndex = 0;
@@ -73,7 +73,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(217, 233);
+            this.label2.Location = new System.Drawing.Point(217, 33);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(78, 20);
             this.label2.TabIndex = 1;
@@ -82,7 +82,7 @@
             // ButtonStart
             // 
             this.ButtonStart.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ButtonStart.Location = new System.Drawing.Point(431, 256);
+            this.ButtonStart.Location = new System.Drawing.Point(431, 56);
             this.ButtonStart.Name = "ButtonStart";
             this.ButtonStart.Size = new System.Drawing.Size(144, 35);
             this.ButtonStart.TabIndex = 2;
@@ -93,7 +93,7 @@
             // TextIpAddress
             // 
             this.TextIpAddress.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.TextIpAddress.Location = new System.Drawing.Point(3, 256);
+            this.TextIpAddress.Location = new System.Drawing.Point(3, 56);
             this.TextIpAddress.Name = "TextIpAddress";
             this.TextIpAddress.Size = new System.Drawing.Size(208, 26);
             this.TextIpAddress.TabIndex = 3;
@@ -102,8 +102,9 @@
             // TextPassword
             // 
             this.TextPassword.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.TextPassword.Location = new System.Drawing.Point(217, 256);
+            this.TextPassword.Location = new System.Drawing.Point(217, 56);
             this.TextPassword.Name = "TextPassword";
+            this.TextPassword.PasswordChar = '*';
             this.TextPassword.Size = new System.Drawing.Size(208, 26);
             this.TextPassword.TabIndex = 4;
             this.TextPassword.WordWrap = false;
@@ -114,7 +115,7 @@
             this.PictureLogo.Dock = System.Windows.Forms.DockStyle.Fill;
             this.PictureLogo.Location = new System.Drawing.Point(3, 3);
             this.PictureLogo.Name = "PictureLogo";
-            this.PictureLogo.Size = new System.Drawing.Size(572, 227);
+            this.PictureLogo.Size = new System.Drawing.Size(572, 27);
             this.PictureLogo.TabIndex = 5;
             this.PictureLogo.TabStop = false;
             // 
@@ -122,12 +123,13 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(578, 294);
+            this.ClientSize = new System.Drawing.Size(578, 94);
             this.Controls.Add(this.tableLayoutPanel1);
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(600, 350);
-            this.MinimumSize = new System.Drawing.Size(600, 350);
+            this.MaximumSize = new System.Drawing.Size(600, 150);
+            this.MinimumSize = new System.Drawing.Size(600, 150);
             this.Name = "FormVPStreaming";
+            this.ShowIcon = false;
             this.Text = "VP Streaming";
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
