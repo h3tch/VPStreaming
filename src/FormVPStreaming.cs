@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -19,24 +18,24 @@ namespace VPStreaming
             // load the logo if the file exists
             if (File.Exists("logo.png"))
             {
-				// this step resizes the windows to deal with Mono/.Net differences
-				MaximumSize = new Size(MaximumSize.Width, MaximumSize.Width);
-				MinimumSize = new Size(MinimumSize.Width, MaximumSize.Width);
+                // this step resizes the windows to deal with Mono/.Net differences
+                MaximumSize = new Size(MaximumSize.Width, MaximumSize.Width);
+                MinimumSize = new Size(MinimumSize.Width, MaximumSize.Width);
 
-				// load the logo and resize it
+                // load the logo and resize it
                 var logo = Image.FromFile("logo.png");
-				var offset = PictureLogo.Width - PictureLogo.Height;
-				// resize the app so the picture containing the logo is squared
-				MaximumSize = new Size(MaximumSize.Width, MaximumSize.Height + offset);
-				MinimumSize = new Size(MinimumSize.Width, MinimumSize.Height + offset);
-				// set the logo
+                var offset = PictureLogo.Width - PictureLogo.Height;
+                // resize the app so the picture containing the logo is squared
+                MaximumSize = new Size(MaximumSize.Width, MaximumSize.Height + offset);
+                MinimumSize = new Size(MinimumSize.Width, MinimumSize.Height + offset);
+                // set the logo
                 PictureLogo.Image = ResizeImage(logo, PictureLogo.Width, PictureLogo.Height);
             }
         }
 
         private void ButtonStart_Click(object sender, EventArgs e)
         {
-			// get environment variables that contain the gstreamer root directory (windows)
+            // get environment variables that contain the gstreamer root directory (windows)
             var gstDirectory = Environment.GetEnvironmentVariable("GSTREAMER_1_0_ROOT_X86");
             if (gstDirectory == null)
                 gstDirectory = Environment.GetEnvironmentVariable("GSTREAMER_1_0_ROOT_X86_64");
@@ -45,7 +44,7 @@ namespace VPStreaming
             var gst_exe = "gst-launch-1.0";
             var gst_launch = gstDirectory != null ? $"{gstDirectory}bin/" : "./";
             var gst_pipeline = "videotestsrc ! autovideosink";
-            
+
             // load settings xml file
             var xmlDocument = new XmlDocument();
             try
@@ -109,7 +108,7 @@ namespace VPStreaming
                 graphics.CompositingQuality = CompositingQuality.HighQuality;
                 graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 graphics.SmoothingMode = SmoothingMode.HighQuality;
-				graphics.DrawImage(image, 0, 0, destImage.Width, destImage.Height);
+                graphics.DrawImage(image, 0, 0, destImage.Width, destImage.Height);
             }
 
             return destImage;
