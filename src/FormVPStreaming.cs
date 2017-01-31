@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -14,25 +13,38 @@ namespace VPStreaming
         public FormVPStreaming()
         {
             InitializeComponent();
-
-            // load the logo if the file exists
-            if (File.Exists("logo.png"))
-            {
-                // this step resizes the windows to deal with Mono/.Net differences
-                MaximumSize = new Size(MaximumSize.Width, MaximumSize.Width);
-                MinimumSize = new Size(MinimumSize.Width, MaximumSize.Width);
-
-                // load the logo and resize it
-                var logo = Image.FromFile("logo.png");
-                var offset = PictureLogo.Width - PictureLogo.Height;
-                // resize the app so the picture containing the logo is squared
-                MaximumSize = new Size(MaximumSize.Width, MaximumSize.Height + offset);
-                MinimumSize = new Size(MinimumSize.Width, MinimumSize.Height + offset);
-                // set the logo
-                PictureLogo.Image = ResizeImage(logo, PictureLogo.Width, PictureLogo.Height);
-            }
+            LoadLogo("logo.png");
         }
 
+        /// <summary>
+        /// Loads the logo.
+        /// </summary>
+        /// <param name="filename">Filename.</param>
+        private void LoadLogo(string filename)
+        {
+            // load the logo if the file exists
+            if (!File.Exists("logo.png"))
+                return;
+
+            // this step resizes the windows to deal with Mono/.Net differences
+            MaximumSize = new Size(MaximumSize.Width, MaximumSize.Width);
+            MinimumSize = new Size(MinimumSize.Width, MaximumSize.Width);
+
+            // load the logo and resize it
+            var logo = Image.FromFile("logo.png");
+            var offset = PictureLogo.Width - PictureLogo.Height;
+            // resize the app so the picture containing the logo is squared
+            MaximumSize = new Size(MaximumSize.Width, MaximumSize.Height + offset);
+            MinimumSize = new Size(MinimumSize.Width, MinimumSize.Height + offset);
+            // set the logo
+            PictureLogo.Image = logo.Resize(PictureLogo.Width, PictureLogo.Height);
+        }
+
+        /// <summary>
+        /// Click event of the start button.
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Event arguments</param>
         private void ButtonStart_Click(object sender, EventArgs e)
         {
             // get environment variables that contain the gstreamer root directory (windows)
@@ -45,16 +57,18 @@ namespace VPStreaming
             var gst_launch = gstDirectory != null ? $"{gstDirectory}bin/" : "./";
             var gst_pipeline = "videotestsrc ! autovideosink";
 
-            // load settings xml file
-            var xmlDocument = new XmlDocument();
             try
             {
+                // load settings xml file
+                var xmlDocument = new XmlDocument();
                 xmlDocument.Load("settings.xml");
 
+                // get settings specified in the xml
                 var exe = xmlDocument["Settings"]?["gstreamer"]?["executable"]?.InnerText;
                 var launch = xmlDocument["Settings"]?["gstreamer"]?["directory"]?.InnerText;
                 var pipeline = xmlDocument["Settings"]?["gstreamer"]?["pipeline"]?.InnerText;
 
+                // update values if necessary
                 if (exe != null && exe.Length > 0)
                     gst_exe = exe;
                 if (launch != null && launch.Length > 0)
@@ -82,36 +96,12 @@ namespace VPStreaming
 
             try
             {
-                // start process
                 process.Start();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error");
             }
-        }
-
-        /// <summary>
-        /// Resize the image to the specified width and height.
-        /// </summary>
-        /// <param name="image">The image to resize.</param>
-        /// <param name="width">The width to resize to.</param>
-        /// <param name="height">The height to resize to.</param>
-        /// <returns>The resized image.</returns>
-        public static Bitmap ResizeImage(Image image, int width, int height)
-        {
-            var destImage = new Bitmap(width, height);
-
-            using (var graphics = Graphics.FromImage(destImage))
-            {
-                graphics.CompositingMode = CompositingMode.SourceCopy;
-                graphics.CompositingQuality = CompositingQuality.HighQuality;
-                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphics.SmoothingMode = SmoothingMode.HighQuality;
-                graphics.DrawImage(image, 0, 0, destImage.Width, destImage.Height);
-            }
-
-            return destImage;
         }
     }
 }

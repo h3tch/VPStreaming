@@ -74,6 +74,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="src\ImageExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\App.config" />
