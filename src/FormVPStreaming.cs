@@ -19,23 +19,24 @@ namespace VPStreaming
             // load the logo if the file exists
             if (File.Exists("logo.png"))
             {
+				// this step resizes the windows to deal with Mono/.Net differences
+				MaximumSize = new Size(MaximumSize.Width, MaximumSize.Width);
+				MinimumSize = new Size(MinimumSize.Width, MaximumSize.Width);
+
+				// load the logo and resize it
                 var logo = Image.FromFile("logo.png");
-                var factor = PictureLogo.Width / (double)logo.Width;
-                logo = ResizeImage(logo,
-                    (int)Math.Round(logo.Width * factor),
-                    (int)Math.Round(logo.Height * factor));
-                
-                var offset = logo.Height - PictureLogo.Height;
-                MaximumSize = new Size(MaximumSize.Width, MaximumSize.Height + offset);
-                MinimumSize = new Size(MinimumSize.Width, MinimumSize.Height + offset);
-                PictureLogo.Height = logo.Height;
-                PictureLogo.Image = logo;
+				var offset = PictureLogo.Width - PictureLogo.Height;
+				// resize the app so the picture containing the logo is squared
+				MaximumSize = new Size(MaximumSize.Width, MaximumSize.Height + offset);
+				MinimumSize = new Size(MinimumSize.Width, MinimumSize.Height + offset);
+				// set the logo
+                PictureLogo.Image = ResizeImage(logo, PictureLogo.Width, PictureLogo.Height);
             }
         }
 
         private void ButtonStart_Click(object sender, EventArgs e)
         {
-            // get environment variables that contain the gstreamer root directory
+			// get environment variables that contain the gstreamer root directory (windows)
             var gstDirectory = Environment.GetEnvironmentVariable("GSTREAMER_1_0_ROOT_X86");
             if (gstDirectory == null)
                 gstDirectory = Environment.GetEnvironmentVariable("GSTREAMER_1_0_ROOT_X86_64");
@@ -100,10 +101,7 @@ namespace VPStreaming
         /// <returns>The resized image.</returns>
         public static Bitmap ResizeImage(Image image, int width, int height)
         {
-            var destRect = new Rectangle(0, 0, width, height);
             var destImage = new Bitmap(width, height);
-
-            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
 
             using (var graphics = Graphics.FromImage(destImage))
             {
@@ -111,13 +109,7 @@ namespace VPStreaming
                 graphics.CompositingQuality = CompositingQuality.HighQuality;
                 graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 graphics.SmoothingMode = SmoothingMode.HighQuality;
-                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-                using (var wrapMode = new ImageAttributes())
-                {
-                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
-                }
+				graphics.DrawImage(image, 0, 0, destImage.Width, destImage.Height);
             }
 
             return destImage;
